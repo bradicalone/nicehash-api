@@ -61,25 +61,24 @@ const getAuthHeader = (
     return apiKey + ':' + hmac.finalize().toString(CryptoJS.enc.Hex)
 }
 
-class NicehHashApi {
+class NiceHash {
     constructor({ locale, apiHost, apiKey, apiSecret, orgId }) {
         this.locale = locale || 'en'
-        this.host = apiHost
+        this.host = 'https://api-test.nicehash.com'
         this.key = apiKey
         this.secret = apiSecret
         this.org = orgId
         this.localTimeDiff = null
     }
 
-    getTime() {
-        return request({
+    async getTime() {
+        const res = await request({
             uri: this.host + '/api/v2/time',
             json: true,
-        }).then(res => {
-            this.localTimeDiff = res.serverTime - +new Date()
-            this.time = res.serverTime
-            return res
         })
+        this.localTimeDiff = res.serverTime - +new Date()
+        this.time = res.serverTime
+        return res
     }
 
     apiCall(method, path, { query, body, time } = {}) {
@@ -143,18 +142,17 @@ class NicehHashApi {
 
     /* ----------------------- TEST-------------------------------------- */
 
-    testAuthorization() {
-        if (!!this.key && !!this.org && !!this.secret) {
-            this.getTime()
-                .then(res => {
-                    log('good to go 200', res)
-                    return true
-                })
-                .catch(err => {
-                    throw new Error(`Something went wrong... ${err}`)
-                })
+    async testAuthorization() {
+        if (this.key && this.org && this.secret) {
+            try {
+                let res = await this.getTime()
+                log('Good to go 200', res)
+                return !!res
+            } catch (e) {
+                throw new Error(`Test Authorization request failed: ${err}`)
+            }
         } else {
-            log('check config file')
+            log('Check credentials')
             return false
         }
     }
@@ -235,7 +233,7 @@ class NicehHashApi {
 
     /**
      * Get information about Simple Multi-Algorithm Mining
-     * @async
+     * 
      * {
         miningAlgorithms:[List of mining algorithms ...
             {
@@ -345,15 +343,7 @@ class NicehHashApi {
     // creates pool - config for user
     // username is equvilent to flo addy - workername
     //! potential bug - check for typeof algo
-    async createOrEditPool(
-        id = '',
-        algorithm = 0,
-        name,
-        username,
-        password = 'x',
-        stratumHostname,
-        stratumPort
-    ) {
+    async createOrEditPool( id = '',algorithm = 0,name,username,password = 'x',stratumHostname, stratumPort ) {
         this.getTime()
             .then(() => {
                 let body = {
@@ -769,4 +759,4 @@ const convertLocation = location => {
     }
 }
 
-export default NicehHashApi
+export default NiceHash
