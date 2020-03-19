@@ -62,12 +62,13 @@ const getAuthHeader = (
 }
 
 class NiceHash {
-    constructor({ locale, apiHost, apiKey, apiSecret, orgId }) {
+    constructor(settings = {}) {
+        let { locale, api_key, api_secret, api_id } = settings
         this.locale = locale || 'en'
         this.host = 'https://api-test.nicehash.com'
-        this.key = apiKey
-        this.secret = apiSecret
-        this.org = orgId
+        this.key = api_key
+        this.secret = api_secret
+        this.org = api_id
         this.localTimeDiff = null
     }
 
@@ -81,7 +82,7 @@ class NiceHash {
         return res
     }
 
-    apiCall(method, path, { query, body, time } = {}) {
+    async apiCall(method, path, { query, body, time } = {}) {
         if (this.localTimeDiff === null) {
             return Promise.reject(new Error('Get server time first .getTime()'))
         }
@@ -121,7 +122,7 @@ class NiceHash {
             json: true,
         }
 
-        return request(options)
+        return await request(options)
     }
 
     get(path, options) {
@@ -343,26 +344,25 @@ class NiceHash {
     // creates pool - config for user
     // username is equvilent to flo addy - workername
     //! potential bug - check for typeof algo
-    async createOrEditPool( id = '',algorithm = 0,name,username,password = 'x',stratumHostname, stratumPort ) {
-        this.getTime()
-            .then(() => {
-                let body = {
-                    algorithm: convertIDtoAlgo(algorithm),
-                    name,
-                    username,
-                    password,
-                    stratumHostname,
-                    stratumPort,
-                    id, //Pool id (Required only if editing pool data)
-                }
-                return this.post('/main/api/v2/pool', { body })
-            })
-            .then(res => {
-                return res
-            })
-            .catch(err => {
-                throw new Error(`Failed to create or edit pool: ${err}`)
-            })
+    async createOrEditPool(options) {
+        let getTime = await this.getTime()
+        let body = {
+            algorithm: options.type.toUpperCase(),
+            name: options.name,
+            username: options.user,
+            password: options.pass,
+            stratumHostname: options.host,
+            stratumPort: options.port,
+            id: options.id || '', //Pool id (Required only if editing pool data)
+        }
+        try {
+            let response = await this.post('/main/api/v2/pool', {body})
+            console.log('response:', response)
+            
+            return response
+        } catch (e) {
+            return {error: e}
+        }
     }
 
     async getPoolInfo(poolId) {
@@ -723,26 +723,21 @@ market:EU | USAMarket ...
     }
 }
 //-----------------------------Helper Functions------------------------------------
-const checkAlgo = algoName => {
-    if (typeof algoName === 'string') {
-        return convertAlgoToID(algoName)
-    }
-    return algoName
-}
 
-const convertIDtoAlgo = algo => {
-    if (typeof algo === 'number') {
-        return algorithms[algo].toUpperCase()
-    }
-}
+// Fixed this for you, but you reall dont' need it. 
+const convertIDtoAlgo = algo => algo.toUpperCase();
+
 
 const convertAlgoToID = algo => {
+    // Their all strings
     if (typeof algo === 'string') {
         for (let id in algorithms) {
+            // None of these will match because it's a mixture of lower case and upper case for each one. 
             if (algorithms[id].toLowerCase() === algo.toLowerCase()) {
                 return id
             }
         }
+    // None of these are numbers, so only thing this conditinal is going to do is return the algo everytime
     } else if (typeof algo === 'number') {
         if (algorithms[algo]) return algorithms.algo
     } else return algo
