@@ -488,7 +488,7 @@ Marketplace / Place, refill and cancel hashpower orders (PRCO)
 
     /**
      * Create new order. Only standard orders can be created with use of API.
-     * @param {string} type - Hash power order type
+     * @param {string} - Hash power order type
      * @param {string|number} [limit=0.01] - Speed limit in GH/s or TH/s (0 for no limit);
      * @param {string} poolId - Pool id
      * @param {string|number} [price=] - Price in BTC/GH/day or BTC/TH/day;
