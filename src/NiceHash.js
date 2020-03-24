@@ -489,15 +489,15 @@ Marketplace / Place, refill and cancel hashpower orders (PRCO)
     /**
      * Create new order. Only standard orders can be created with use of API.
      * @param {string} - Hash power order type
-     * @param {string|number} [limit=0.01] - Speed limit in GH/s or TH/s (0 for no limit);
-     * @param {string} poolId - Pool id
-     * @param {string|number} [price=] - Price in BTC/GH/day or BTC/TH/day;
-     * @param {string} marketFactor - (Big decimal scaled to 8 decimal points )Used display market factor (numeric)
-     * @param {string} displayMarketFactor - Used display market factor
-     * @param {string|} amount=0.005  - Pay amount in BTC;
-     * @param {string} algorithm - - Algorithm name or ID
-     * @param {number} market - 1 for Europe (NiceHash), 2 for USA (WestHash)
-     * @param {string|number} [code] - This parameter is optional. You have to provide it if you have 2FA enabled. You can use NiceHash2FA Java application to generate codes.
+     * @param {string|number} - Speed limit in GH/s or TH/s (0 for no limit);
+     * @param {string}  - Pool id
+     * @param {string|number}  - Price in BTC/GH/day or BTC/TH/day;
+     * @param {string} - (Big decimal scaled to 8 decimal points )Used display market factor (numeric)
+     * @param {string}  - Used display market factor
+     * @param {string} =0.005  - Pay amount in BTC;
+     * @param {string} - - Algorithm name or ID
+     * @param {number} - 1 for Europe (NiceHash), 2 for USA (WestHash)
+     * @param {string|number}  - This parameter is optional. You have to provide it if you have 2FA enabled. You can use NiceHash2FA Java application to generate codes.
      * @async
      * @returns {Promise<Object> created order}
      * 
