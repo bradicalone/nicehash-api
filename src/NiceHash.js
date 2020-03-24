@@ -488,23 +488,18 @@ Marketplace / Place, refill and cancel hashpower orders (PRCO)
 
     /**
      * Create new order. Only standard orders can be created with use of API.
-     * @param {string} - Hash power order type
-     * @param {string|number} - Speed limit in GH/s or TH/s (0 for no limit);
+     * @param {string} type - Hash power order type
+     * @param {string|number} - Speed limit in GH/s or TH/s (0 for no limit)
      * @param {string}  - Pool id
      * @param {string|number}  - Price in BTC/GH/day or BTC/TH/day;
      * @param {string} - (Big decimal scaled to 8 decimal points )Used display market factor (numeric)
      * @param {string}  - Used display market factor
-     * @param {string} =0.005  - Pay amount in BTC;
-     * @param {string} - - Algorithm name or ID
+     * @param {string}   0.005  - Pay amount in BTC;
+     * @param {string} - Algorithm name or ID
      * @param {number} - 1 for Europe (NiceHash), 2 for USA (WestHash)
      * @param {string|number}  - This parameter is optional. You have to provide it if you have 2FA enabled. You can use NiceHash2FA Java application to generate codes.
      * @async
      * @returns {Promise<Object> created order}
-     * 
-     * 
-    *amount:string (Big decimal scaled to 8 decimal points)Amount in BTC ...
-    *algorithm:SCRYPT | SHA256 | SCRYPTNF | X11 | X13 | KECCAK | X15 | NIST5 | NEOSCRYPT | LYRA2RE | WHIRLPOOLX | QUBIT | QUARK | AXIOM | LYRA2REV2 | SCRYPTJANENF16 | BLAKE256R8 | BLAKE256R14 | BLAKE256R8VNL | HODL | DAGGERHASHIMOTO | DECRED | CRYPTONIGHT | LBRY | EQUIHASH | PASCAL | X11GOST | SIA | BLAKE2S | SKUNK | CRYPTONIGHTV7 | CRYPTONIGHTHEAVY | LYRA2Z | X16R | CRYPTONIGHTV8 | SHA256ASICBOOST | ZHASH | BEAM | GRINCUCKAROO29 | GRINCUCKATOO31 | LYRA2REV3 | CRYPTONIGHTR | CUCKOOCYCLE | GRINCUCKAROOD29 | BEAMV2 | X16RV2 | RANDOMXMONERO | EAGLESONG | CUCKAROOM | GRINCUCKATOO32Algorithm ...
-    *market:EU | USAMarket ...
      */
 
     async createOrder(
