@@ -499,7 +499,7 @@ Marketplace / Place, refill and cancel hashpower orders (PRCO)
      * @param {number} - 1 for Europe (NiceHash), 2 for USA (WestHash)
      * @param {string|number}  - This parameter is optional. You have to provide it if you have 2FA enabled. You can use NiceHash2FA Java application to generate codes.
      * @async
-     * @returns {Promise<Object>} create order 
+     * @return {Promise<Object>} create order 
      */
 
     async createOrder(
