@@ -352,10 +352,15 @@ class NiceHash {
             id: options.id || '', //Pool id (Required only if editing pool data)
         }
         try {
-            let response = await this.post('/main/api/v2/pool', {body})
-            return response.success = true
-        } catch (e) {
-            return {error: e}
+            let response = await this.post('/main/api/v2/pool', {
+              body
+            });
+            response.success = true
+            return response;
+          } catch (e) {
+            return {
+                error: e.error
+            };
         }
     }
 
