@@ -3,9 +3,13 @@ import request from 'request-promise-native'
 import qs from 'qs'
 import algorithms from './algorithms'
 
+
 var log = function() {
     return console.log(...arguments)
 }
+
+// Fixed this for you, but you reall dont' need it. 
+const convertIDtoAlgo = algo => algo.toUpperCase();
 
 function createNonce() {
     var s = '',
@@ -19,16 +23,8 @@ function createNonce() {
     return s
 }
 
-const getAuthHeader = (
-    apiKey,
-    apiSecret,
-    time,
-    nonce,
-    organizationId = '',
-    request = {}
-) => {
+const getAuthHeader = ( apiKey, apiSecret,time, nonce, organizationId = '', request = {} ) => {
     const hmac = CryptoJS.algo.HMAC.create(CryptoJS.algo.SHA256, apiSecret)
-
     hmac.update(apiKey)
     hmac.update('\0')
     hmac.update(time)
@@ -712,37 +708,6 @@ Marketplace / Place, refill and cancel hashpower orders (PRCO)
                     `Failed to get deposit addresses, pass in currency: ${err}`
                 )
             })
-    }
-}
-//-----------------------------Helper Functions------------------------------------
-
-// Fixed this for you, but you reall dont' need it. 
-const convertIDtoAlgo = algo => algo.toUpperCase();
-
-
-const convertAlgoToID = algo => {
-    // Their all strings
-    if (typeof algo === 'string') {
-        for (let id in algorithms) {
-            // None of these will match because it's a mixture of lower case and upper case for each one. 
-            if (algorithms[id].toLowerCase() === algo.toLowerCase()) {
-                return id
-            }
-        }
-    // None of these are numbers, so only thing this conditinal is going to do is return the algo everytime
-    } else if (typeof algo === 'number') {
-        if (algorithms[algo]) return algorithms.algo
-    } else return algo
-}
-
-const convertLocation = location => {
-    switch (location) {
-        case 1:
-            return 'EU'
-        case 2:
-            return 'USA'
-        default:
-            return ''
     }
 }
 
