@@ -397,16 +397,14 @@ class NiceHash {
             page,
         }
 
-        this.getTime()
-            .then(() => {
-                return this.get(`/main/api/v2/pools/`, { query })
-            })
-            .then(res => {
-                return res
-            })
-            .catch(err => {
-                throw new Error(`Failed to get pools: ${err}`)
-            })
+        let getTime = await this.getTime()
+        try {
+            let pools = this.get("/main/api/v2/pools/", { query });
+            return pools;
+        } catch(err) {
+            console.log('err: Catch satement NiceHash.js line 405', err)
+            throw new Error("Failed to get pools: ".concat(err));
+        }
     }
 
     async verifyPool(
