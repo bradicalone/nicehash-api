@@ -4,7 +4,7 @@ import qs from 'qs'
 import algorithms from './algorithms'
 
 
-var log = function() {
+var log = function () {
     return console.log(...arguments)
 }
 
@@ -23,7 +23,7 @@ function createNonce() {
     return s
 }
 
-const getAuthHeader = ( apiKey, apiSecret,time, nonce, organizationId = '', request = {} ) => {
+const getAuthHeader = (apiKey, apiSecret, time, nonce, organizationId = '', request = {}) => {
     const hmac = CryptoJS.algo.HMAC.create(CryptoJS.algo.SHA256, apiSecret)
     hmac.update(apiKey)
     hmac.update('\0')
@@ -177,22 +177,21 @@ class NiceHash {
      * @async
      * @return {Promise<Array.<Object>>}
      */
+
     async getCurrentGlobalStats24h() {
-        this.getTime()
-            .then(() => this.get('/main/api/v2/public/stats/global/24h'))
-            .then(res => {
-                if (res.algos) {
-                    for (let stat of res.algos) {
-                        stat.algo = algorithms[stat.a]
-                    }
-                    return res.algos
+        try {
+            let time = await this.getTime()
+            let res = await this.get('/main/api/v2/public/stats/global/24h');
+            if (res.algos) {
+                for (let stat of res.algos) {
+                    stat.algo = algorithms[stat.a]
                 }
-            })
-            .catch(err => {
-                throw new Error(
-                    `Failed to get current global stats 24h: ${err}`
-                )
-            })
+                return res.algos;
+            } else
+                return { err: "Failed to get current global stats 24h: " }
+        } catch (e) {
+            return { err: "Failed to get current global stats 24h: ".concat(e) }
+        }
     }
 
     /**
@@ -279,15 +278,17 @@ class NiceHash {
         let query = {
             currency: currency.toUpperCase(),
         }
-
-        this.getTime()
-            .then(() => this.get('/main/api/v2/accounting/accounts', { query }))
-            .then(res => {
-                return res
-            })
-            .catch(err => {
-                throw new Error(`Failed to get balance: ${err}`)
-            })
+        try {
+            let time = await this.getTime()
+            let balances = await this.get('/main/api/v2/accounting/accounts', { query })
+            for (let obj of balances) {
+                if (obj.balance > 0) {
+                    return obj;
+                }
+            }
+        } catch (e) {
+            return { err: "Failed to get balance: ".concat(e) }
+        }
     }
 
     async getExchangeSetting() {
@@ -353,11 +354,11 @@ class NiceHash {
         }
         try {
             let response = await this.post('/main/api/v2/pool', {
-              body
+                body
             });
             response.success = true
             return response;
-          } catch (e) {
+        } catch (e) {
             return {
                 error: e.error
             };
@@ -401,7 +402,7 @@ class NiceHash {
         try {
             let pools = this.get("/main/api/v2/pools/", { query });
             return pools;
-        } catch(err) {
+        } catch (err) {
             console.log('err: Catch satement NiceHash.js line 405', err)
             throw new Error("Failed to get pools: ".concat(err));
         }
@@ -501,47 +502,34 @@ Marketplace / Place, refill and cancel hashpower orders (PRCO)
      * @return {Promise<Object>} create order 
      */
 
-    async createOrder(
-        type = 'STANDARD',
-        limit,
-        poolId,
-        price,
-        marketFactor,
-        displayMarketFactor,
-        amount,
-        market,
-        algorithm = 'SCRYPT'
-    ) {
-        if (typeof algo === 'number') {
-            algo = convertIDtoAlgo(algo)
-        }
+    async createOrder(options) {
+   
 
         if (typeof market === 'number') {
             market = convertLocation(market)
         }
 
-        this.getTime()
-            .then(() => {
-                var body = {
-                    type: type.toUpperCase(),
-                    limit,
-                    poolId,
-                    price,
-                    marketFactor,
-                    displayMarketFactor,
-                    amount,
-                    market: market,
-                    algorithm: algorithm.toUpperCase(),
-                }
-
-                return this.post('/main/api/v2/hashpower/order', { body })
-            })
-            .then(res => {
-                return res
-            })
-            .catch(err => {
-                throw new Error(`Failed to create order: ${err}`)
-            })
+        const body = {
+            type: 'STANDARD', //STANDARD | FIXED
+            // limit: options.limit,
+            limit: options.limit,
+            poolId: options.id,
+            price: options.price,
+            marketFactor: '1000000000000',
+            displayMarketFactor: 'TH',
+            amount: options.amount,
+            market: 'USA',
+            algorithm: options.algorithm.toUpperCase()
+        };
+      
+        try {
+            const time = await this.getTime()
+            const res = await this.post('/main/api/v2/hashpower/order', { body });
+            return res
+        } catch(err) {
+            console.log("Failed to create order: ".concat(err))
+            return {error: `Failed to create order: ${err}`}
+        }
     }
 
     /**
