@@ -61,7 +61,7 @@ class NiceHash {
     constructor(settings = {}) {
         let { locale, api_key, api_secret, api_id } = settings
         this.locale = locale || 'en'
-        this.host = 'https://api-test.nicehash.com'
+        this.host = 'https://api2.nicehash.com';
         this.key = api_key
         this.secret = api_secret
         this.org = api_id
@@ -403,8 +403,9 @@ class NiceHash {
             let pools = this.get("/main/api/v2/pools/", { query });
             return pools;
         } catch (err) {
-            console.log('err: Catch satement NiceHash.js line 405', err)
-            throw new Error("Failed to get pools: ".concat(err));
+            console.log('err: Catch satement NiceHash.js in src folder line 406', err.error)
+            err.message = 'Couldn\'t reach Nicehash\'s api'
+            return err;
         }
     }
 
