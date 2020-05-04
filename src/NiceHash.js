@@ -87,7 +87,7 @@ class NiceHash {
         var [pathOnly, pathQuery] = path.split('?')
         if (pathQuery) query = { ...qs.parse(pathQuery), ...query }
 
-        const nonce = createNonce()
+        const nonce = createNonce()iright
         const timestamp = (time || +new Date() + this.localTimeDiff).toString()
         const options = {
             uri: this.host + pathOnly,
@@ -303,22 +303,20 @@ class NiceHash {
     }
 
     // not allowed in the U.S.
-    async getOrderBook(marketSymbol = '', limit = 25) {
+    async getOrderBook() {
         let query = {
-            market: marketSymbol,
-            limit,
+          algorithm: 'SCRYPT'
+        };
+        try {
+          let time = await this.getTime();
+          let res = await this.get('/main/api/v2/hashpower/orderBook/', {
+            query
+          })
+          return res
+        } catch ( err ) {
+          throw new Error("Failed to get exchange order book: ".concat(err));
         }
-
-        this.getTime()
-            .then(() => this.get('/exchange/api/v2/orderbook/', { query }))
-            .then(res => {
-                log(res)
-                return res
-            })
-            .catch(err => {
-                throw new Error(`Failed to get exchange order book: ${err}`)
-            })
-    }
+      }
 
     async getAlgoSetting() {
         this.getTime()
