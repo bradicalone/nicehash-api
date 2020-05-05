@@ -87,7 +87,7 @@ class NiceHash {
         var [pathOnly, pathQuery] = path.split('?')
         if (pathQuery) query = { ...qs.parse(pathQuery), ...query }
 
-        const nonce = createNonce()iright
+        const nonce = createNonce();
         const timestamp = (time || +new Date() + this.localTimeDiff).toString()
         const options = {
             uri: this.host + pathOnly,
