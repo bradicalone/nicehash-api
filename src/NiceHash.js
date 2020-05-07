@@ -274,22 +274,18 @@ class NiceHash {
      *                              | TDASH | TXLM | TEOS | TERC | TBSV | TEURKM
      */
     // returns list of currency and balance;
-    async getBalance(currency = '') {
-        let query = {
-            currency: currency.toUpperCase(),
-        }
+    async getBalance(currency = 'BTC') {
         try {
-            let time = await this.getTime()
-            let balances = await this.get('/main/api/v2/accounting/accounts', { query })
-            for (let obj of balances) {
-                if (obj.balance > 0) {
-                    return obj;
-                }
-            }
+          let time = await this.getTime();
+          let balances = await this.get('/main/api/v2/accounting/account2/'+currency);
+          let {totalBalance, available, pending, btcRate} = balances;
+          return totalBalance
         } catch (e) {
-            return { err: "Failed to get balance: ".concat(e) }
+          return {
+            err: "Failed to get balance: ".concat(e)
+          };
         }
-    }
+      }
 
     async getExchangeSetting() {
         this.getTime()
