@@ -336,9 +336,10 @@ class NiceHash {
     // username is equvilent to flo addy - workername
     //! potential bug - check for typeof algo
     async createOrEditPool(options) {
+        let type = options.type || options.algo
         let getTime = await this.getTime()
         let body = {
-            algorithm: options.type.toUpperCase(),
+            algorithm: type.toUpperCase(),
             name: options.name,
             username: options.user,
             password: options.pass,
