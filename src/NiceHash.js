@@ -501,9 +501,9 @@ Marketplace / Place, refill and cancel hashpower orders (PRCO)
     async createOrder(options) {
    
 
-        if (typeof market === 'number') {
-            market = convertLocation(market)
-        }
+        // if (typeof market === 'number') {
+        //     market = convertLocation(market)
+        // }
 
         const body = {
             type: 'STANDARD', //STANDARD | FIXED
@@ -679,22 +679,19 @@ Marketplace / Place, refill and cancel hashpower orders (PRCO)
 
     // Deposit Address
     async getDepositAddresses(currency) {
-        let query = {
-            currency: currency.toUpperCase(),
-        }
 
-        this.getTime()
-            .then(() =>
-                this.get('/main/api/v2/accounting/depositAddresses/', { query })
-            )
-            .then(res => {
-                return res
+        let query = {
+            currency: currency.toUpperCase()
+        };
+        try {
+            const time = await this.getTime();
+            const res = await this.get('/main/api/v2/accounting/depositAddresses/', {
+                query
             })
-            .catch(err => {
-                throw new Error(
-                    `Failed to get deposit addresses, pass in currency: ${err}`
-                )
-            })
+            return res
+        } catch (err) {
+            throw new Error("Failed to get deposit addresses, pass in currency: ".concat(err));
+        }
     }
 }
 
