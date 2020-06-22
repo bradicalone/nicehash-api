@@ -513,16 +513,17 @@ Marketplace / Place, refill and cancel hashpower orders (PRCO)
     }
     /**
      * Create new order. Only standard orders can be created with use of API.
-     * @param {string} type - Hash power order type
-     * @param {string|number} limit - Speed limit in GH/s or TH/s (0 for no limit)
-     * @param {string}  poolId - Pool id
-     * @param {string|number}  - Price in BTC/GH/day or BTC/TH/day;
-     * @param {string} - (Big decimal scaled to 8 decimal points )Used display market factor (numeric)
-     * @param {string}  - Used display market factor
-     * @param {string}   0.005  - Pay amount in BTC;
-     * @param {string} - Algorithm name or ID
-     * @param {number} - 1 for Europe (NiceHash), 2 for USA (WestHash)
-     * @param {string|number}  - This parameter is optional. You have to provide it if you have 2FA enabled. You can use NiceHash2FA Java application to generate codes.
+     * @param {Object} options - The Options for the rental operation
+     * @param {string} options.type - Hash power order type
+     * @param {string|number} options.limit - Speed limit in GH/s or TH/s (0 for no limit)
+     * @param {string}  options.id - Pool id
+     * @param {string|number} options.price - Price in BTC/GH/day or BTC/TH/day;
+     * @param {string} options.marketFactor - (Big decimal scaled to 8 decimal points )Used display market factor (numeric)
+     * @param {string} options.displayMarketFactor - Used display market factor
+     * @param {string} options.amount   0.005  - Pay amount in BTC;
+     * @param {string} options.algorithm- Algorithm name or ID
+     * @param {number} options.market - 1 for Europe (NiceHash), 2 for USA (WestHash)
+     * @param {string|number} options.token -The coin you wish to rent with
      * @async
      * @return {Promise<Object>} create order 
      */
@@ -535,8 +536,7 @@ Marketplace / Place, refill and cancel hashpower orders (PRCO)
         // }
 
         const body = {
-            type: 'STANDARD', //STANDARD | FIXED
-            // limit: options.limit,
+            type: options.type, //STANDARD | FIXED
             limit: options.limit,
             poolId: options.id,
             price: options.price,
