@@ -483,6 +483,35 @@ Marketplace / Place, refill and cancel hashpower orders (PRCO)
     }
 
     /**
+     * Get fixed price on FIXED orders.
+     * @param {Object} options - The Options for the rental operation
+     * @param {string} options.limit - Hash power 
+     * @param {string}  options.algorithm - Algorithm of chosing 
+     * @async
+     * @return {Promise<Object>} create order 
+     */
+    async getFixedPrice(options) {
+        const body = {
+          limit: options.limit,
+          market: 'USA',
+          algorithm: options.algorithm.toUpperCase()
+        }
+      
+        try {
+          const time = await this.getTime();
+          const res = await this.post('/main/api/v2/hashpower/orders/fixedPrice/', {
+            body
+        });
+
+          return res;
+        } catch (err) {
+          console.log("Failed to getFixed price: ".concat(err));
+          return {
+            error: "Failed to getFixed price: ".concat(err)
+          };
+        }
+    }
+    /**
      * Create new order. Only standard orders can be created with use of API.
      * @param {string} type - Hash power order type
      * @param {string|number} limit - Speed limit in GH/s or TH/s (0 for no limit)
