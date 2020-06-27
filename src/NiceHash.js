@@ -482,6 +482,28 @@ Marketplace / Place, refill and cancel hashpower orders (PRCO)
             })
     }
 
+    async getDuration(settings) {
+        const body = {
+            marketFactor: '1000000000000',
+            displayMarketFactor: 'TH',
+            decreaseFee: true,
+            amount: settings.amount,
+            limit: settings.limit,
+            price: settings.price,
+            type: settings.type
+        };
+    
+        try {
+            const time = await this.getTime();
+            const res = await this.post('/main/api/v2/hashpower/orders/calculateEstimateDuration/', {
+                body
+            })
+            return res
+        } catch (err) {
+            throw new Error("Failed to get duration: ".concat(err));
+        }
+    }
+
     /**
      * Get fixed price on FIXED orders.
      * @param {Object} options - The Options for the rental operation
