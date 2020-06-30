@@ -299,9 +299,9 @@ class NiceHash {
     }
 
     // not allowed in the U.S.
-    async getOrderBook() {
+    async getOrderBook(algo) {
         let query = {
-          algorithm: 'SCRYPT'
+          algorithm: algo.toUpperCase()
         };
         try {
           let time = await this.getTime();
@@ -558,16 +558,20 @@ Marketplace / Place, refill and cancel hashpower orders (PRCO)
         // }
 
         const body = {
-            type: options.type, //STANDARD | FIXED
+            type: options.type,
+            //STANDARD | FIXED
             limit: options.limit,
             poolId: options.id,
             price: options.price,
-            marketFactor: '1000000000000',
-            displayMarketFactor: 'TH',
+            // marketFactor: '1000000000000',
+            // displayMarketFactor: 'TH',
+            marketFactor: '1000000000',
+            displayMarketFactor: 'GH',
             amount: options.amount,
             market: 'USA',
-            algorithm: options.algorithm.toUpperCase()
-        };
+            // algorithm: options.algorithm.toUpperCase()
+            algorithm: 'KAWPOW'
+          };
       
         try {
             const time = await this.getTime()
