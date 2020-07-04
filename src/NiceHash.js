@@ -524,7 +524,6 @@ Marketplace / Place, refill and cancel hashpower orders (PRCO)
           const res = await this.post('/main/api/v2/hashpower/orders/fixedPrice/', {
             body
         });
-
           return res;
         } catch (err) {
           console.log("Failed to getFixed price: ".concat(err));
@@ -551,32 +550,25 @@ Marketplace / Place, refill and cancel hashpower orders (PRCO)
      */
 
     async createOrder(options) {
-   
-
         // if (typeof market === 'number') {
         //     market = convertLocation(market)
         // }
-
         const body = {
-            type: options.type,
             //STANDARD | FIXED
+            type: options.type,
             limit: options.limit,
             poolId: options.id,
             price: options.price,
-            // marketFactor: '1000000000000',
-            // displayMarketFactor: 'TH',
-            marketFactor: '1000000000',
-            displayMarketFactor: 'GH',
+            marketFactor: options.marketFactor,
+            displayMarketFactor: options.displayMarketFactor,
             amount: options.amount,
             market: 'USA',
-            // algorithm: options.algorithm.toUpperCase()
-            algorithm: 'KAWPOW'
+            algorithm: options.algorithm.toUpperCase()
           };
       
         try {
             const time = await this.getTime()
-            const res = await this.post('/main/api/v2/hashpower/order', { body });
-            return res
+            return await this.post('/main/api/v2/hashpower/order', { body });
         } catch(err) {
             console.log("Failed to create order: ".concat(err))
             return {error: `Failed to create order: ${err}`}
