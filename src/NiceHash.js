@@ -505,6 +505,30 @@ Marketplace / Place, refill and cancel hashpower orders (PRCO)
     }
 
     /**
+     * Get price and other values for standard orders.
+     * @param {string} algo - Algorithm of the price needed
+     * @async
+     * @return {Promise<Object>} object
+     */
+
+    async getStandardPrice(algo) {
+        const query = {
+          market: 'USA',
+          algorithm: algo.toUpperCase()
+        }
+        try {
+          const time = await this.getTime();
+          const res = await this.get('/main/api/v2/hashpower/orders/summaries/', {query} );
+          return res;
+        } catch (err) {
+          console.log("Failed to get standard price: ".concat(err));
+          return {
+            error: "Failed to get standard price: ".concat(err)
+          };
+        }
+    }
+
+    /**
      * Get fixed price on FIXED orders.
      * @param {Object} options - The Options for the rental operation
      * @param {string} options.limit - Hash power 
